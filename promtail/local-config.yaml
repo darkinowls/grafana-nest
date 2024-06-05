@@ -7,6 +7,7 @@ positions:
 
 clients:
   - url: 'http://loki:3100/loki/api/v1/push'
+#    Can be http://loki.darkinowls.com/loki/api/v1/push
 
 scrape_configs:
   - job_name: single
@@ -15,12 +16,20 @@ scrape_configs:
           - localhost
         labels:
           job: varlogs
-          __path__: /var/log/*log
+          __path__: /var/log/*
 
-  - job_name: other
+  - job_name: mysql_logs
     static_configs:
       - targets:
           - localhost
         labels:
           job: var_logs
-          __path__: /var/log/**/*log
+          __path__: /var/log/mysql_logs/*
+
+  - job_name: grafana_logs
+    static_configs:
+      - targets:
+          - localhost
+        labels:
+          job: var_logs
+          __path__: /var/log/grafana_logs/*
