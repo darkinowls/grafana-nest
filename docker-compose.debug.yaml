@@ -33,3 +33,11 @@ services:
     volumes:
       - ./loki:/etc/loki
     command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    volumes:
+      - ./promtail:/etc/promtail
+    command: -config.file=/etc/promtail/local-config.yaml
+    depends_on:
+      - loki
