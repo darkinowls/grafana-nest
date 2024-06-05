@@ -161,6 +161,6 @@ create user my2@'%' identified by 'P1e@seCh@ngeMe';
 grant all on my2.* to my2@'%';
 grant select on performance_schema.* to my2@'%';
 
-CREATE USER 'grafana_selector'@'172.22.0.2' IDENTIFIED BY 'password';
-GRANT SELECT ON my2.* TO 'grafana_selector'@'172.22.0.2';
+CREATE USER 'grafana'@'%' IDENTIFIED BY 'password';
+GRANT SELECT ON my2.* TO 'grafana'@'%';
 FLUSH PRIVILEGES;

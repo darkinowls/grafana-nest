@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.7'
 
 services:
 
@@ -15,11 +15,9 @@ services:
       - GF_USERS_ALLOW_ORG_CREATE=false
     depends_on:
       - mysql
-    networks:
-      custom_network:
-        ipv4_address: 172.22.0.2
 
   mysql:
+    hostname: mysql.local.com
     image: mysql:8.0
     ports:
       - "13306:3306"
@@ -27,8 +25,6 @@ services:
       - ./mysql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD=root
-    networks:
-      - custom_network
 
 #  postgres:
 #    image: postgres:16-alpine
