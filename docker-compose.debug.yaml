@@ -9,6 +9,7 @@ services:
       - "13000:3000"
     volumes:
       - ./grafana:/var/lib/grafana
+      - grafana_logs:/var/log
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
@@ -23,6 +24,7 @@ services:
       - "13306:3306"
     volumes:
       - ./mysql:/var/lib/mysql
+      - mysql_logs:/var/log
     environment:
       - MYSQL_ROOT_PASSWORD=root
 
@@ -38,6 +40,12 @@ services:
     image: grafana/promtail:3.0.0
     volumes:
       - ./promtail:/etc/promtail
+      - mysql_logs:/var/log/mysql_logs:ro
+      - grafana_logs:/var/log/grafana_logs:ro
     command: -config.file=/etc/promtail/local-config.yaml
     depends_on:
       - loki
+
+volumes:
+  mysql_logs:
+  grafana_logs:
