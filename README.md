@@ -1,4 +1,4 @@
-# ПОЯСЮЮ ЗА ГРАФАНУ
+# Пояснюю за Grafana
 
 1) береш СУБД наприклад postgres і створюйєш docker compose для postgres + grafana
 
