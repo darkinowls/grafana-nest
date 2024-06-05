@@ -161,6 +161,7 @@ create user my2@'%' identified by 'P1e@seCh@ngeMe';
 grant all on my2.* to my2@'%';
 grant select on performance_schema.* to my2@'%';
 
+-- Use ip address instead of % if possible
 CREATE USER 'grafana'@'%' IDENTIFIED BY 'password';
 GRANT SELECT ON my2.* TO 'grafana'@'%';
 FLUSH PRIVILEGES;
