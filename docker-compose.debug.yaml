@@ -24,7 +24,6 @@ services:
       - "13306:3306"
     volumes:
       - ./mysql:/var/lib/mysql
-      - mysql_logs:/var/log:wo
     environment:
       - MYSQL_ROOT_PASSWORD=root
 
@@ -42,8 +41,8 @@ services:
       - "13080:9080"
     volumes:
       - ./promtail:/etc/promtail
-      - mysql_logs:/var/log/mysql_logs:ro
-      - grafana_logs:/var/log/grafana_logs:ro
+      - ./mysql:/var/log/mysql_logs
+      - grafana_logs:/var/log/grafana_logs
     command: -config.file=/etc/promtail/local-config.yaml
     depends_on:
       - loki
