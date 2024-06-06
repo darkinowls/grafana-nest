@@ -10,12 +10,25 @@ services:
     volumes:
       - ./grafana:/var/lib/grafana
       - grafana_logs:/var/log:wo
+#      - grafana_proc:/proc
+      - grafana_sys:/sys
+      - grafana_rootfs:/rootfs
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_USERS_ALLOW_ORG_CREATE=false
     depends_on:
       - mysql
+
+  grafana-exporter:
+    image: prom/node-exporter:v1.8.1
+    volumes:
+#      - grafana_proc:/host/proc
+      - grafana_sys:/host/sys:ro
+      - grafana_rootfs:/rootfs:ro
+    command: --path.sysfs /host/sys --path.rootfs /rootfs
+    depends_on:
+      - grafana
 
   mysql:
     hostname: mysql.local.com
@@ -50,16 +63,37 @@ services:
 
   nginx:
     build:
-        context: .
-        dockerfile: nginx.dockerfile
+      context: .
+      dockerfile: nginx.dockerfile
     ports:
-      - "13082:80"
+      - "13088:80"
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - nginx_logs:/var/log/nginx
-#    network_mode: host
+  #    network_mode: host
+
+  prometheus:
+    image: prom/prometheus:v2.52.0
+    ports:
+      - "13090:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+    command: --config.file=/etc/prometheus/prometheus.yml
+
+  prom-node:
+    image: prom/node-exporter:v1.8.1
+    ports:
+      - "13190:9100"
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command: --path.procfs /host/proc --path.sysfs /host/sys --path.rootfs /rootfs
 
 volumes:
   mysql_logs:
   grafana_logs:
   nginx_logs:
+  grafana_proc:
+  grafana_sys:
+  grafana_rootfs:

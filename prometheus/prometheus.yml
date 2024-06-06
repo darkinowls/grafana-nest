@@ -1,0 +1,36 @@
+# Global configuration
+global:
+  scrape_interval: 15s # Default scrape interval for all targets
+  evaluation_interval: 15s # How often to evaluate rules
+  # scrape_timeout is set to the global default (10s).
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+# - "first_rules.yml"
+# - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+scrape_configs:
+  # The job name is used to label the metrics collected
+  - job_name: 'prometheus'
+
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: [ 'localhost:9090' ]
+
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: [ 'prom-node:9100' ]
+
+  - job_name: 'grafana'
+    static_configs:
+      - targets: [ 'grafana-exporter:9100' ]
