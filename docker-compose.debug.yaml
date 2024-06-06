@@ -38,6 +38,8 @@ services:
 
   promtail:
     image: grafana/promtail:3.0.0
+    ports:
+      - "13080:9080"
     volumes:
       - ./promtail:/etc/promtail
       - mysql_logs:/var/log/mysql_logs:ro
