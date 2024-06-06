@@ -15,7 +15,7 @@ scrape_configs:
       - targets:
           - localhost
         labels:
-          job: varlogs
+          job: server_logs
           __path__: /var/log/*log
 
   - job_name: mysql_logs
@@ -23,7 +23,7 @@ scrape_configs:
       - targets:
           - localhost
         labels:
-          job: var_logs
+          job: sql_logs
           __path__: /var/log/mysql_logs/mysql.log
 
   - job_name: grafana_logs
@@ -31,7 +31,7 @@ scrape_configs:
       - targets:
           - localhost
         labels:
-          job: var_logs
+          job: grafana_logs
           __path__: /var/log/grafana_logs/*
 
   - job_name: nginx
