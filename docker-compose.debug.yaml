@@ -43,10 +43,23 @@ services:
       - ./promtail:/etc/promtail
       - ./mysql:/var/log/mysql_logs
       - grafana_logs:/var/log/grafana_logs
+      - nginx_logs:/var/log/nginx_log
     command: -config.file=/etc/promtail/local-config.yaml
     depends_on:
       - loki
 
+  nginx:
+    build:
+        context: .
+        dockerfile: nginx.dockerfile
+    ports:
+      - "13082:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - nginx_logs:/var/log/nginx
+#    network_mode: host
+
 volumes:
   mysql_logs:
   grafana_logs:
+  nginx_logs:
