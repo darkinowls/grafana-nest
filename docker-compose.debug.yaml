@@ -72,7 +72,7 @@ services:
       - nginx_logs:/var/log/nginx
   #    network_mode: host
 
-# it is used for cloud
+  # it is used for cloud
   prometheus:
     image: prom/prometheus:v2.52.0
     ports:
@@ -91,15 +91,15 @@ services:
       - /:/rootfs:ro
     command: --path.procfs /host/proc --path.sysfs /host/sys --path.rootfs /rootfs
 
-# it is used for IOT devices
+  # it is used for IOT devices
   influxdb:
     image: influxdb:2.7.6-alpine
     ports:
       - "13086:8086"
     volumes:
       - influxdb:/var/lib/influxdb2
-# admin: 7hsQKYmfwYzW9ZsD_wCvdJJGwnKdBgoaS4230UZW6dBDb75ScdzOW7HMplXXAAVVnj4i8zww4r3N9RNDtGzmlg==
-# read only: ej7vIzJjiAsvpKQY86RorYCSYwWUxMCSz5e1v1z69cBYP7Q9zkwjwN5-oke17KdRkszSJ0j1G4YSQ4xkrP-vAg==
+  # admin: 7hsQKYmfwYzW9ZsD_wCvdJJGwnKdBgoaS4230UZW6dBDb75ScdzOW7HMplXXAAVVnj4i8zww4r3N9RNDtGzmlg==
+  # read only: ej7vIzJjiAsvpKQY86RorYCSYwWUxMCSz5e1v1z69cBYP7Q9zkwjwN5-oke17KdRkszSJ0j1G4YSQ4xkrP-vAg==
 
   telegraf:
     image: telegraf:1.30-alpine
@@ -107,7 +107,75 @@ services:
       - ./telegraf:/etc/telegraf
     command: --config-directory=/etc/telegraf/telegraf.debug.conf
 
+
+# ZABBIX
+  zabbix-db:
+    image: postgres:16-alpine
+    container_name: zabbix-db
+    ports:
+      - "13432:5432"
+    environment:
+      POSTGRES_DB: zabbix
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbixpass
+    volumes:
+      - zabbix-db-data:/var/lib/postgresql/data
+
+
+  zabbix-server:
+    image: zabbix/zabbix-server-pgsql:latest
+    container_name: zabbix-server
+    depends_on:
+      - zabbix-db
+    environment:
+      DB_SERVER_HOST: zabbix-db
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbixpass
+      POSTGRES_DB: zabbix
+    volumes:
+      - zabbix-server-logs:/var/log/zabbix
+    ports:
+      - "13051:10051"
+
+  zabbix-web:
+#    user: Admin
+#    password: zabbix
+
+#    grafana
+#    strong123
+
+    image: zabbix/zabbix-web-nginx-pgsql:latest
+    container_name: zabbix-web
+    depends_on:
+      - zabbix-server
+      - zabbix-db
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+      DB_SERVER_HOST: zabbix-db
+      POSTGRES_USER: zabbix
+      POSTGRES_PASSWORD: zabbixpass
+      POSTGRES_DB: zabbix
+      PHP_TZ: Europe/London
+    ports:
+      - "13082:8080"
+    volumes:
+      - zabbix-web-data:/usr/share/zabbix
+
+  zabbix-agent:
+    image: zabbix/zabbix-agent:latest
+    container_name: zabbix-agent
+    environment:
+      ZBX_SERVER_HOST: zabbix-server
+      ZBX_HOSTNAME: zabbix-agent
+    volumes:
+      - zabbix-agent-logs:/var/log/zabbix
+
+
 volumes:
+  zabbix-db-data:
+  zabbix-server-logs:
+  zabbix-web-data:
+  zabbix-agent-logs:
   mysql_logs:
   grafana_logs:
   nginx_logs:
@@ -115,3 +183,5 @@ volumes:
   grafana_sys:
   grafana_rootfs:
   influxdb:
+  zabbix_db_data:
+  zbx_data:

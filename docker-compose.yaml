@@ -49,7 +49,7 @@ services:
       - "13080:9080"
     volumes:
       - ./promtail:/etc/promtail
-      - /home/ec2-user/nginx-the-proxy/data/logs:/var/log/nginx_log
+      - ~/nginx-the-proxy/data/logs:/var/log/nginx_log
     command: -config.file=/etc/promtail/local-config.yaml
     depends_on:
       - loki
