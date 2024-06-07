@@ -13,8 +13,8 @@ services:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_USERS_ALLOW_ORG_CREATE=false
-#    depends_on:
-#      - prometheus
+  #    depends_on:
+  #      - prometheus
 
   prometheus:
     image: prom/prometheus:v2.52.0
@@ -22,6 +22,7 @@ services:
       - "13090:9090"
     volumes:
       - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
     command: --config.file=/etc/prometheus/prometheus.yml
 
   prom-node:
@@ -55,4 +56,5 @@ services:
 
 volumes:
   grafana:
+  prometheus_data:
 
