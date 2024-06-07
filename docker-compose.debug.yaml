@@ -10,7 +10,7 @@ services:
     volumes:
       - ./grafana:/var/lib/grafana
       - grafana_logs:/var/log:wo
-#      - grafana_proc:/proc
+      #      - grafana_proc:/proc
       - grafana_sys:/sys
       - grafana_rootfs:/rootfs
     environment:
@@ -23,7 +23,7 @@ services:
   grafana-exporter:
     image: prom/node-exporter:v1.8.1
     volumes:
-#      - grafana_proc:/host/proc
+      #      - grafana_proc:/host/proc
       - grafana_sys:/host/sys:ro
       - grafana_rootfs:/rootfs:ro
     command: --path.sysfs /host/sys --path.rootfs /rootfs
@@ -90,6 +90,15 @@ services:
       - /:/rootfs:ro
     command: --path.procfs /host/proc --path.sysfs /host/sys --path.rootfs /rootfs
 
+  influxdb:
+    image: influxdb:2.7.6-alpine
+    ports:
+      - "13086:8086"
+    volumes:
+      - influxdb:/var/lib/influxdb2
+# 7hsQKYmfwYzW9ZsD_wCvdJJGwnKdBgoaS4230UZW6dBDb75ScdzOW7HMplXXAAVVnj4i8zww4r3N9RNDtGzmlg==
+
+
 volumes:
   mysql_logs:
   grafana_logs:
@@ -97,3 +106,4 @@ volumes:
   grafana_proc:
   grafana_sys:
   grafana_rootfs:
+  influxdb:
