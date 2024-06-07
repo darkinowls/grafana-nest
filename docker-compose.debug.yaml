@@ -98,6 +98,11 @@ services:
       - influxdb:/var/lib/influxdb2
 # 7hsQKYmfwYzW9ZsD_wCvdJJGwnKdBgoaS4230UZW6dBDb75ScdzOW7HMplXXAAVVnj4i8zww4r3N9RNDtGzmlg==
 
+  telegraf:
+    image: telegraf:1.30-alpine
+    volumes:
+      - ./telegraf:/etc/telegraf
+    command: --config-directory=/etc/telegraf/telegraf.d
 
 volumes:
   mysql_logs:
