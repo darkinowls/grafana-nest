@@ -34,6 +34,24 @@ services:
       - /:/rootfs:ro
     command: --path.procfs /host/proc --path.sysfs /host/sys --path.rootfs /rootfs
 
+  loki:
+    image: grafana/loki:2.9.8
+    ports:
+      - "13100:3100"
+    volumes:
+      - ./loki:/etc/loki
+    command: -config.file=/etc/loki/local-config.yaml
+
+  promtail:
+    image: grafana/promtail:3.0.0
+    ports:
+      - "13080:9080"
+    volumes:
+      - ~/nginx-the-proxy/data/logs:/var/log/nginx_log
+    command: -config.file=/etc/promtail/local-config.yaml
+    depends_on:
+      - loki
+
 volumes:
   grafana:
 
