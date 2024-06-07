@@ -72,6 +72,7 @@ services:
       - nginx_logs:/var/log/nginx
   #    network_mode: host
 
+# it is used for cloud
   prometheus:
     image: prom/prometheus:v2.52.0
     ports:
@@ -90,19 +91,21 @@ services:
       - /:/rootfs:ro
     command: --path.procfs /host/proc --path.sysfs /host/sys --path.rootfs /rootfs
 
+# it is used for IOT devices
   influxdb:
     image: influxdb:2.7.6-alpine
     ports:
       - "13086:8086"
     volumes:
       - influxdb:/var/lib/influxdb2
-# 7hsQKYmfwYzW9ZsD_wCvdJJGwnKdBgoaS4230UZW6dBDb75ScdzOW7HMplXXAAVVnj4i8zww4r3N9RNDtGzmlg==
+# admin: 7hsQKYmfwYzW9ZsD_wCvdJJGwnKdBgoaS4230UZW6dBDb75ScdzOW7HMplXXAAVVnj4i8zww4r3N9RNDtGzmlg==
+# read only: ej7vIzJjiAsvpKQY86RorYCSYwWUxMCSz5e1v1z69cBYP7Q9zkwjwN5-oke17KdRkszSJ0j1G4YSQ4xkrP-vAg==
 
   telegraf:
     image: telegraf:1.30-alpine
     volumes:
       - ./telegraf:/etc/telegraf
-    command: --config-directory=/etc/telegraf/telegraf.debug.d
+    command: --config-directory=/etc/telegraf/telegraf.debug.conf
 
 volumes:
   mysql_logs:
