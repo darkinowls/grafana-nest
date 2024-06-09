@@ -1,0 +1,65 @@
+# ============================== Filebeat inputs ===============================
+
+filebeat.inputs:
+  # Collect log files from /var/log/*.log
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/*.log
+
+  # Example to collect Docker logs
+  - type: docker
+    containers:
+      path: "/var/lib/docker/containers"
+      stream: "all"
+      ids:
+        - "*"
+
+# ============================== Filebeat modules ==============================
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+# =============================== Kibana =======================================
+
+setup.kibana:
+  host: "http://kibana:5601"
+
+# ============================== Elasticsearch output ==========================
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  username: "elastic"
+  password: "changeme"
+  indices:
+    - index: "filebeat-%{[agent.version]}-%{+yyyy.MM.dd}"
+
+# =================================== Logging ===================================
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644
+
+# =============================== Processors ===================================
+processors:
+  - add_host_metadata: ~
+  - add_cloud_metadata: ~
+  - add_docker_metadata: ~
+
+# ================================== Setup =====================================
+setup.template.settings:
+  index.number_of_shards: 1
+  index.codec: best_compression
+
+setup.ilm.enabled: auto
+setup.ilm.rollover_alias: "filebeat"
+setup.ilm.pattern: "{now/d}-000001"
+
+# =============================== Migration ====================================
+migration.6_to_7.enabled: true
+
+# =============================== Miscellaneous ================================
+http.enabled: true
+http.port: 5066

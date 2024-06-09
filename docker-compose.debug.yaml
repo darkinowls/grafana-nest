@@ -177,6 +177,8 @@ services:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - ELASTIC_PASSWORD=changeme
+      - ELASTIC_USERNAME=elastic
     ulimits:
       memlock:
         soft: -1
@@ -187,7 +189,7 @@ services:
     volumes:
       - esdata:/usr/share/elasticsearch/data
 
-#  DOWNALOD SAMPLES WITH @timestamp
+  #  DOWNALOD SAMPLES WITH @timestamp
   kibana:
     image: docker.elastic.co/kibana/kibana:7.16.0
     ports:
@@ -197,6 +199,17 @@ services:
     depends_on:
       - elasticsearch
 
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:7.16.0
+    user: root
+    volumes:
+      - ./filebeat/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: ["--strict.perms=false"]
+    depends_on:
+      - elasticsearch
+      - kibana
 
 volumes:
   zabbix-db-data:
