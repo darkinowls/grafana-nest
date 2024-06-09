@@ -108,7 +108,7 @@ services:
     command: --config-directory=/etc/telegraf/telegraf.debug.conf
 
 
-# ZABBIX
+  # ZABBIX
   zabbix-db:
     image: postgres:16-alpine
     container_name: zabbix-db
@@ -138,11 +138,11 @@ services:
       - "13051:10051"
 
   zabbix-web:
-#    user: Admin
-#    password: zabbix
+    #    user: Admin
+    #    password: zabbix
 
-#    grafana
-#    strong123
+    #    grafana
+    #    strong123
 
     image: zabbix/zabbix-web-nginx-pgsql:latest
     container_name: zabbix-web
@@ -171,6 +171,33 @@ services:
       - zabbix-agent-logs:/var/log/zabbix
 
 
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.16.0
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+#  DOWNALOD SAMPLES WITH @timestamp
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.16.0
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
+
+
 volumes:
   zabbix-db-data:
   zabbix-server-logs:
@@ -185,3 +212,4 @@ volumes:
   influxdb:
   zabbix_db_data:
   zbx_data:
+  esdata:
