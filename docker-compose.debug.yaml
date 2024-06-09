@@ -9,10 +9,10 @@ services:
       - "13000:3000"
     volumes:
       - ./grafana:/var/lib/grafana
-      - grafana_logs:/var/log:wo
-      #      - grafana_proc:/proc
+      - grafana_logs:/var/log
       - grafana_sys:/sys
       - grafana_rootfs:/rootfs
+#      - ./gs:/data/grafana/
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin
       - GF_USERS_ALLOW_SIGN_UP=false
@@ -90,6 +90,14 @@ services:
       - /sys:/host/sys:ro
       - /:/rootfs:ro
     command: --path.procfs /host/proc --path.sysfs /host/sys --path.rootfs /rootfs
+
+#  alertmanager:
+#    image: prom/alertmanager:v0.27.0
+#    ports:
+#      - "13093:9093"
+#    volumes:
+#      - ./alertmanager:/etc/alertmanager
+#    command: --config.file=/etc/alertmanager/alertmanager.debug.yml
 
   # it is used for IOT devices
   influxdb:
