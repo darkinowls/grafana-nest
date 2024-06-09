@@ -1,0 +1,25 @@
+# metricbeat.yml
+
+metricbeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+metricbeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+
+processors:
+  - add_cloud_metadata: ~
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+  username: "elastic"
+  password: "changeme"
+
+# Enable system module
+metricbeat.modules:
+  - module: docker
+    metricsets: ["container", "cpu", "diskio", "healthcheck", "info", "memory", "network"]
+    hosts: ["unix:///var/run/docker.sock"]
+    period: 10s
